@@ -13,13 +13,27 @@
 			function parse_pubmed_query(query, element) 
 			{
 				var html = '';
-				// query = query.replace("&nbsp;", " ");
-				// console.log("hier:"+query);
-				html = query.replace(/\sOR\s/gi, "<div class='operator'> OR </div>");
+				
+				// add line between two operators
+				html = query.replace(/\s+AND\s+AND\s+/gi, " AND <br/> AND ")
+				html = html.replace(/\s+OR\s+OR\s+/gi, " OR <br/> OR ")
+				html = html.replace(/\s+NOT\s+NOT\s+/gi, " NOT <br/> NOT ")
+
+				html = html.replace(/\s+AND\s+NOT\s+/gi, " AND <br/> NOT ")
+				html = html.replace(/\s+NOT\s+AND\s+/gi, " NOT <br/> AND ")
+				html = html.replace(/\s+AND\s+OR\s+/gi, " AND <br/> OR ")
+				html = html.replace(/\s+OR\s+AND\s+/gi, " OR <br/> AND ")
+				html = html.replace(/\s+NOT\s+OR\s+/gi, " NOT <br/> OR ")
+				html = html.replace(/\s+OR\s+NOT\s+/gi, " OR <br/> NOT ")
+				
+				// html = html.replace(/\s?\bOR\b\s?/gi, "<div class='operator'> OR </div>");
+				// html = html.replace(/\s?\bAND\b\s?/gi, "<div class='operator'> AND </div>");
+				// html = html.replace(/\s?\bNOT\b\s?/gi, "<div class='operator'> NOT </div>");
+				
+				html = html.replace(/\sOR\s/gi, "<div class='operator'> OR </div>");
 				html = html.replace(/\sAND\s/gi, "<div class='operator'> AND </div>");
 				html = html.replace(/\sNOT\s/gi, "<div class='operator'> NOT </div>");
-				// html = html.replace(/\[/gi, "<div class='tag'>[");
-				// html = html.replace(/\]/gi, "]</div>");
+				
 				html = html.replace(/\s*\(/gi, "<div class='levelup'>(");
 				html = html.replace(/\)\s*/gi, ") </div>");
 				element.innerHTML = html + "";
