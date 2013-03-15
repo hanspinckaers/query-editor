@@ -1,0 +1,289 @@
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>Pubmed Query Editor 0.1</title>
+		<script type="text/javascript" charset="utf-8" src="rangy-core.js"></script>
+		<script type="text/javascript" charset="utf-8" src="rangy-cssclassapplier.js"></script>
+		<script type="text/javascript" charset="utf-8" src="rangy-selectionsaverestore.js"></script>
+		<script type="text/javascript" charset="utf-8" src="rangy-serializer.js"></script>
+		<script type="text/javascript" charset="utf-8" src="wgxpath.install.js"></script>
+		<link rel="stylesheet" type="text/css" href="style.css">
+		<script>
+			function parse_pubmed_query(query, element) 
+			{
+				var html = '';
+				// query = query.replace("&nbsp;", " ");
+				// console.log("hier:"+query);
+				html = query.replace(/\sOR\s/gi, "<div class='operator'> OR </div>");
+				html = html.replace(/\sAND\s/gi, "<div class='operator'> AND </div>");
+				html = html.replace(/\sNOT\s/gi, "<div class='operator'> NOT </div>");
+				html = html.replace(/\[/gi, "<div class='tag'>[");
+				html = html.replace(/\]/gi, "]</div>");
+				html = html.replace(/\s*\(/gi, "<div class='levelup'>(");
+				html = html.replace(/\)\s*/gi, ") </div>");
+				element.innerHTML = html + "";
+			}
+
+			function getPathTo(element) 
+			{
+				if (element.id !== '')
+					return 'id("' + element.id + '")';
+				if (element === document.body)
+					return element.tagName;
+
+				var ix = 0;
+				var siblings = element.parentNode.childNodes;
+				for (var i = 0; i < siblings.length; i++) {
+					var sibling = siblings[i];
+					if (sibling === element)
+						return getPathTo(element.parentNode) + '/' + element.tagName + '[' + (ix + 1) + ']';
+					if (sibling.nodeType === 1 && sibling.tagName === element.tagName)
+						ix++;
+				}
+			}
+
+			var prevLetter = 0;
+			var letter = 0;
+			var oldQuery = "";
+
+			function markup(e) 
+			{
+				prevLetter = letter;
+				letter = e.which;
+
+				if(letter == 32) return;
+
+				var rawQueryEl = document.getElementById("rawquery");
+				oldQuery = rawQueryEl.value;
+				var queryEl = document.getElementById("query");
+				rawQueryEl.value = queryEl.textContent.replace(/\s{2,}/, ' ').replace("\n","").replace("\r","");
+
+				var changedSize = false;
+				if(rawQueryEl.value != oldQuery) changedSize = true;				
+				if(!changedSize && letter != 13)
+				{
+					console.log("no change in size:" + rawQueryEl.value + " " + oldQuery);
+				}
+				if(letter == 37 || letter == 38 || letter == 39 || letter == 40 || letter == 8 || !changedSize) return;
+
+				console.log("----\n" + letter);
+
+				if (rangy.getSelection()
+					.rangeCount == 0 || !rangy.getSelection()
+					.isCollapsed) return;
+				var range = rangy.getSelection()
+					.getRangeAt(0);
+
+				var parent = range.startContainer.parentNode;
+				var children = parent.childNodes;
+				var length = children.length;
+				var index = 0;
+
+				for (var i = 0; i < length; i++) 
+				{
+					if (children[i] == range.startContainer) 
+					{
+						index = i;
+					}
+				}
+
+				var xpath = getPathTo(range.startContainer);
+				if (range.startContainer.nodeType == 3 || !xpath || range.startContainer.tagName == "SPAN")
+				{
+					xpath = getPathTo(range.startContainer.parentNode);	
+				} 
+
+				xpath = xpath.replace("query", "testquery");
+
+				// parse into the hidden field
+				parse_pubmed_query(rawQueryEl.value, document.getElementById("testquery"));
+
+				var result = document.evaluate (
+					xpath, // XPath expression
+					document.body, // context node
+					null, // namespace resolver
+					XPathResult.FIRST_ORDERED_NODE_TYPE,
+					null // for firefox
+				);
+
+				var newEl = result.singleNodeValue;
+				if (!newEl || xpath.indexOf("testquery") == -1) 
+				{
+					return;
+				}
+				else {
+					queryEl.innerHTML = document.getElementById("testquery").innerHTML;
+					xpath = xpath.replace("testquery", "query");
+					result = document.evaluate (
+						xpath, // XPath expression
+						document.body, // context node
+						null, // namespace resolver
+						XPathResult.FIRST_ORDERED_NODE_TYPE,
+						null // for firefox
+					);
+					newEl = result.singleNodeValue;
+				}
+
+				var newRange = rangy.createRange();
+				var start = range.startOffset;
+
+				// console.log("newEl; ");
+				// console.log(newEl);
+
+				var selectEl = (range.startContainer.nodeType == 3 && newEl.childNodes[index]) ? newEl.childNodes[index] : newEl;
+				console.log("SelectEL; ");
+				console.log(selectEl);
+
+				if (selectEl.nodeType == 3 &&
+					range.startContainer.nodeType == 3 &&
+					(start > selectEl.length))
+					{
+						console.log("first");
+						selectEl = newEl.childNodes[index + 1];
+						if (!selectEl) 
+						{
+							if (newEl.nextSibling) selectEl = newEl.nextSibling;
+							else selectEl = newEl.firstChild;
+						}
+						if(selectEl.nextSibling)
+						{
+							if(selectEl.nextSibling.nodeType == 3 && selectEl.nodeType != 3)
+							{
+								newRange.setStart(selectEl.nextSibling, selectEl.nextSibling.length);
+							}
+							else {
+								newRange.setStartAfter(selectEl);
+							}
+						}
+						else {
+							newRange.setStartAfter(selectEl);
+						}
+				} 
+				else if (range.startContainer.nodeType == 3 && selectEl.nodeType == 3) 
+				{	
+					console.log("second");
+					if(range.startContainer.data > selectEl.data && selectEl.parentNode != queryEl)
+					{
+						selectEl = selectEl.parentNode.nextSibling;
+						if(selectEl.nodeType == 3)
+						{	
+							newRange.setStart(selectEl, 1);
+						}
+						else {
+							newRange.setStart(selectEl.firstChild, range.startContainer.length - selectEl.firstChild.length);
+						}
+					}
+					else {
+						console.log(selectEl.data);
+						newRange.setStart(selectEl, start);
+					}
+				} 
+				else if (selectEl) 
+				{
+					console.log("third");
+					if(selectEl == queryEl)
+					{
+						newRange.setStartAfter(selectEl.lastChild);	
+					}
+					else {
+						if(selectEl.nextSibling)
+						{
+							newRange.setStartAfter(selectEl.nextSibling);		
+						}
+						else {
+							newRange.setStartAfter(selectEl);	
+						}
+					}						
+				} 
+				else {
+					return;
+				}
+
+				console.log(selectEl.length, selectEl, start);
+
+				newRange.collapse(true);
+				var sel = rangy.getSelection();
+				sel.setSingleRange(newRange);
+			}
+
+
+			// make sure br is always the lastChild of contenteditable
+			function checkLastChild() 
+			{
+				var el = document.getElementById("query");
+
+				if (!el.lastChild || el.lastChild.nodeName.toLowerCase() != "br") 
+				{
+					var br = document.createElement('br');
+					el.appendChild(br);
+				}
+			}
+
+			// use br instead of div div
+			function insertBR(e) 
+			{
+				if (e.which == 13) 
+				{
+					if (window.getSelection) 
+					{
+						var selection = window.getSelection(),
+							range = selection.getRangeAt(0),
+							br = document.createTextNode(" ");
+						range.deleteContents();
+						range.insertNode(br);
+						range.setStartAfter(br);
+						range.setEndAfter(br);
+						range.collapse(false);
+						selection.removeAllRanges();
+						selection.addRange(range);
+						return false;
+					}
+				}
+			}
+
+			function log(string)
+			{
+				console.log(string);
+			}
+
+		</script>
+	</head>
+
+	<body>
+		<a href="https://github.com/HansPinckaers/query-editor"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
+		
+		<textarea id="rawquery" type="text" onkeyup="parse_pubmed_query(this.value, document.getElementById('query'))"></textarea>
+		<div id="query" contenteditable="false" onkeyup="markup(event)" onkeypress="return insertBR(event)">
+			Sorry, using the styled editor is not possible yet in your browser. <strong>Use Chrome or Safari, Firefox support is experimental.</strong> <br/>You can always type in the upper textfield and see your styled query here.
+		</div>
+		<div id="testquery" style="display:none"></div>
+		<p>
+			Todo: 
+			<ul>
+				<li>Reliability</li>
+				<li>Browser-related problems: Strange cursor handling in Firefox, not tested in IE etc.</li>
+				<li>Keep in mind that the editor is not finished. <strong>If you want to be save, type in the upper textfield!</strong></li>
+			</ul>
+		</p>
+		<p>
+			Built by <a href="http://buildsucceeded.nl/">Hans Pinckaers</a> – 2013<br/>
+			This project is <a href="https://github.com/HansPinckaers/query-editor">open-source</a>.
+		</p>
+	</body>
+
+	<script>
+		window.onload = function(){ 	
+			var ua = navigator.userAgent,
+			res;
+			res = ua.indexOf(' AppleWebKit/') !== -1;
+			if(!res) res = ua.indexOf('Firefox/') !== -1;
+			if(res)
+			{
+				document.getElementById('query').contentEditable = true;
+				document.getElementById('query').innerHTML = "";
+			}
+		};
+	</script>
+
+</html>
