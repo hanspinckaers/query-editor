@@ -18,8 +18,8 @@
 				html = query.replace(/\sOR\s/gi, "<div class='operator'> OR </div>");
 				html = html.replace(/\sAND\s/gi, "<div class='operator'> AND </div>");
 				html = html.replace(/\sNOT\s/gi, "<div class='operator'> NOT </div>");
-				html = html.replace(/\[/gi, "<div class='tag'>[");
-				html = html.replace(/\]/gi, "]</div>");
+				// html = html.replace(/\[/gi, "<div class='tag'>[");
+				// html = html.replace(/\]/gi, "]</div>");
 				html = html.replace(/\s*\(/gi, "<div class='levelup'>(");
 				html = html.replace(/\)\s*/gi, ") </div>");
 				element.innerHTML = html + "";
