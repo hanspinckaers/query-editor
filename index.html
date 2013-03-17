@@ -14,9 +14,7 @@
 	<body>
 		<a href="https://github.com/HansPinckaers/query-editor"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
 		
-		<textarea id="rawquery" type="text" onkeyup="parse_pubmed_query(this.value, document.getElementById('query'))">
-			"male"[MeSH Terms] AND "humans"[MeSH Terms] AND "urination"[MeSH Terms] OR "diuresis"[MeSH Terms] OR "urodynamics"[MeSHerms] OR "urinary bladder"[MeSH] OR "urine"[MeSH Terms] OR "urography"[MeSH Terms] OR "cystoscopy"[MeSH Terms] OR "urinary retention"[MeSH] OR "urination disorders"[MeSH] OR "urologic diseases"[MeSH] OR "urethra"[MeSH Terms] AND "posture"[MeSH Terms] OR “biomechanics” [MeSh Terms]
-		</textarea>
+		<textarea id="rawquery" type="text" onkeyup="parse_pubmed_query(this.value, document.getElementById('query'))" placeholder="Paste existing pubmed-query here. Or start a new one below!"></textarea>
 		<div id="query" contenteditable="false" onkeyup="markup(event)" onkeypress="return insertBR(event)">
 			Sorry, using the styled editor is not possible yet in your browser. <strong>Use Chrome, Safari or Firefox.</strong> <br/>You can always type in the upper textfield and see your styled query here.
 		</div>
