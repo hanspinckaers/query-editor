@@ -44,11 +44,78 @@ div.operator {
 	color: #ad272e;
 	text-align: left;
 }
-span {
+#query span {
 	color:#e98750;
 }
 textarea {
 	width: 100%;
 	height: 20em;
 	margin-bottom: 2em;
+}
+#pubmed
+{
+	line-height: 1.75em;
+}
+#pubmed #queryTranslation
+{
+	color: #1a6f10;
+	font-weight: normal;
+	font-style: normal;
+}
+
+#pubmed #queryDiff
+{
+	color: #5d5d5d;
+}
+
+#pubmed #count
+{
+	font-style: italic;
+}
+
+#queryDiff span
+{
+	color: inherit !important;
+}
+#queryDiff ins, #queryDiff del
+{
+	font-weight: bold;
+	padding: 3px;
+	color: #000000;
+}
+#queryDiff ins
+{
+	text-decoration: none;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.17);
+	font-weight: normal;
+	font-style: normal;
+}
+
+#queryDiff del
+{
+	font-weight: normal;
+	font-style: normal;
+	color: rgb(188, 0, 0);
+}
+
+ins + del,del + ins
+{
+	margin-left: 1px;
+}
+
+a:visited
+{
+	background-color: inherit;
+}
+
+div#pubmed
+{
+	display: none;
+	background-color: rgba(0, 0, 0, 0.02);
+	padding: 1px 10px;
+	border-radius: 5px;
+	min-height: 13px;
+}
+a, a:visited, a:hover, a:active {
+  color: blue;
 }

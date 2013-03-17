@@ -139,6 +139,10 @@ function markup(e)
 		console.log("no change in size:" + rawQueryEl.value + " " + oldQuery);
 		return;
 	}
+	else if(letter == 13)
+	{
+		searchPubmed(text);
+	}
 	
 	if(letter == 37 || letter == 38 || letter == 39 || letter == 40 || letter == 8) return;
 
@@ -363,6 +367,16 @@ function insertBR(e)
 			selection.addRange(range);
 			return false;
 		}
+	}
+}
+
+function cancelReturn(e) 
+{
+	if (e.which == 13) 
+	{
+		e.preventDefault();
+		refreshPubmed();
+		return false;
 	}
 }
 
