@@ -1,26 +1,36 @@
+function loadExample()
+{
+	var query = '"Systems Biology"[mesh] OR ("Computer Simulation" [majr] AND "Models, Biological"[majr])) AND ("whole-cell" OR "cell simulation") AND (bacteria OR virus)';
+	var el = document.getElementById("rawquery");
+	document.getElementById("rawquery").value = query;
+	parse_pubmed_query(query, el);
+	refreshPubmed();
+}
+
 function parse_pubmed_query(query, element) 
 {
 	var html = '';
 	
 	// add line between two operators
-	html = query.replace(/\s+AND\s+AND\s+/gi, " AND <br/> AND ")
-	html = html.replace(/\s+OR\s+OR\s+/gi, " OR <br/> OR ")
-	html = html.replace(/\s+NOT\s+NOT\s+/gi, " NOT <br/> NOT ")
-
-	html = html.replace(/\s+AND\s+NOT\s+/gi, " AND <br/> NOT ")
-	html = html.replace(/\s+NOT\s+AND\s+/gi, " NOT <br/> AND ")
-	html = html.replace(/\s+AND\s+OR\s+/gi, " AND <br/> OR ")
-	html = html.replace(/\s+OR\s+AND\s+/gi, " OR <br/> AND ")
-	html = html.replace(/\s+NOT\s+OR\s+/gi, " NOT <br/> OR ")
-	html = html.replace(/\s+OR\s+NOT\s+/gi, " OR <br/> NOT ")
+	// html = query.replace(/\s+AND\s+AND\s+/gi, " AND <br/> AND ")
+	// html = html.replace(/\s+OR\s+OR\s+/gi, " OR <br/> OR ")
+	// html = html.replace(/\s+NOT\s+NOT\s+/gi, " NOT <br/> NOT ")
+	// 
+	// html = html.replace(/\s+AND\s+NOT\s+/gi, " AND <br/> NOT ")
+	// html = html.replace(/\s+NOT\s+AND\s+/gi, " NOT <br/> AND ")
+	// html = html.replace(/\s+AND\s+OR\s+/gi, " AND <br/> OR ")
+	// html = html.replace(/\s+OR\s+AND\s+/gi, " OR <br/> AND ")
+	// html = html.replace(/\s+NOT\s+OR\s+/gi, " NOT <br/> OR ")
+	// html = html.replace(/\s+OR\s+NOT\s+/gi, " OR <br/> NOT ")
 	
 	// html = html.replace(/\s?\bOR\b\s?/gi, "<div class='operator'> OR </div>");
 	// html = html.replace(/\s?\bAND\b\s?/gi, "<div class='operator'> AND </div>");
 	// html = html.replace(/\s?\bNOT\b\s?/gi, "<div class='operator'> NOT </div>");
 	
-	html = html.replace(/\s?\bOR\b\s?/gi, "<div class='operator focusnext'> OR </div>");
-	html = html.replace(/\s?\bAND\b\s?/gi, "<div class='operator focusnext'> AND </div>");
-	html = html.replace(/\s?\bNOT\b\s?/gi, "<div class='operator focusnext'> NOT </div>");
+	html = query.replace(/\s?\bOR\b\s?/gi, "<div class='operator'>OR</div>");
+	html = html.replace(/\s?\bAND\b\s?/gi, "<div class='operator'>AND</div>");
+	html = html.replace(/\s?\bNOT\b\s?/gi, "<div class='operator'>NOT</div>");
+	
 	html = html.replace(/\[/gi, "<span class='tag'>[");
 	html = html.replace(/\]/gi, "]</span>");
 	
@@ -125,7 +135,7 @@ function markup(e)
 	oldQuery = rawQueryEl.value;	
 	var queryEl = document.getElementById("query");
 	// console.log("-" + queryEl.innerHTML + "-")
-	var text = queryEl.innerHTML.replace(/<(?:.|\n)*?>/gm,'').replace(/\s{2,}/, ' ').replace("\n","").replace("\r","").replace("&nbsp;"," ");
+	var text = queryEl.innerHTML.replace(/<(?:.|\n)*?>/gm,' ').replace("\n"," ").replace("\r"," ").replace("&nbsp;"," ").replace(/\s{2,}/g, ' ').replace(/^\s+/,'').replace(/\s+$/,'');
 	rawQueryEl.value = text;
 	
 	// console.log("-" + queryEl.innerHTML + "-")
@@ -256,6 +266,8 @@ function markup(e)
 
 		// console.log("length of OldEl " + oldEl.data.length + " is smaller than selectEl" + selectEl.data.length + ", prosumably added text, changing start");
 		start += selectEl.data.length - oldEl.data.length;
+		console.log(selectEl.data.length + " " + text.length);
+		// if(oldEl.data.length == text.length) start--; // bug in firefox
 	}
 
 	// so if newEl = textnode, and oldEl = textnode, and de cursor is on a position out of bounds of newEl, find next sibling

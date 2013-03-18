@@ -56,15 +56,20 @@ function searchPubmed(query)
 		
 		// use pubmed translated query to translate to uppercase again!
 		var re = /([A-Za-z]+)/gi;
-		var match = re.exec(queryTranslation);;
+		var match = re.exec(queryTranslation);
+		var cleanDS = ds + "";
 		while (match != null)
 		{
+			console.log(word);
 		  var word = match[1];
-		  ds = ds.replace(new RegExp("\\b" + word + "\\b", "gi"), word);
+		  
+		  cleanDS = cleanDS.replace(new RegExp("\\b" + word + "\\b", "gi"), word);
+		  console.log(cleanDS);
+		  // console.log(ds.search(new RegExp("\\b" + word + "\\b", "gi")));
 		  match = re.exec(queryTranslation);
 		}
 		
-		$('#queryDiff')[0].innerHTML = ds;
+		$('#queryDiff')[0].innerHTML = cleanDS;
 		$("#pubmed").css("opacity", "1.0");
 	});
 }
