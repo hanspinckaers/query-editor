@@ -26,7 +26,7 @@ function parse_pubmed_query(query, element)
 	
 	html = html.replace(/\s*\(/gi, "<div class='levelup focus_1'>(");
 	html = html.replace(/\)\s*/gi, ")</div>");
-	console.log(query + " : " + html + "-");
+
 	element.innerHTML = html + "";
 }
 
@@ -103,7 +103,7 @@ function markup(e)
 	prevLetter = letter;
 	letter = e.which;
 	
-	console.log("-------\n" + letter);
+	// console.log("-------\n" + letter);
 
 	// check for space
 	if(letter == 32) return;
@@ -118,17 +118,17 @@ function markup(e)
 	// check for space
 	var str = range.startContainer.textContent.replace("&nbsp;"," ");
 	var lastChar = str.charAt(start - 1);
-	console.log("lastChar: " + lastChar);
+	// console.log("lastChar: " + lastChar);
 	if(isEmpty(lastChar)) return;	
 	
 	var rawQueryEl = document.getElementById("rawquery");
 	oldQuery = rawQueryEl.value;	
 	var queryEl = document.getElementById("query");
-	console.log("-" + queryEl.innerHTML + "-")
+	// console.log("-" + queryEl.innerHTML + "-")
 	var text = queryEl.innerHTML.replace(/<(?:.|\n)*?>/gm,'').replace(/\s{2,}/, ' ').replace("\n","").replace("\r","").replace("&nbsp;"," ");
 	rawQueryEl.value = text;
 	
-	console.log("-" + queryEl.innerHTML + "-")
+	// console.log("-" + queryEl.innerHTML + "-")
 
 	var changedSize = false;
 	if(rawQueryEl.value != oldQuery) changedSize = true;	
@@ -136,7 +136,7 @@ function markup(e)
 	
 	if(!changedSize && letter != 13)
 	{
-		console.log("no change in size:" + rawQueryEl.value + " " + oldQuery);
+		// console.log("no change in size:" + rawQueryEl.value + " " + oldQuery);
 		return;
 	}
 	else if(letter == 13)
@@ -181,8 +181,8 @@ function markup(e)
 		xpath = getPathTo(range.startContainer.parentNode);	
 		if(!tookDoubleParent)
 		{
-			if(range.startContainer.nodeType == 3) console.log("was a text node");
-			if(!xpath) console.log("no xpath");
+			// if(range.startContainer.nodeType == 3) console.log("was a text node");
+			// if(!xpath) console.log("no xpath");
 			tookparent = true;
 		}
 	} 
@@ -206,7 +206,7 @@ function markup(e)
 
 	var newRange = rangy.createRange();
 
-	console.log(xpath);
+	// console.log(xpath);
 
 	// TODO:
 	// get text node of newEl
@@ -217,16 +217,16 @@ function markup(e)
 	if(oldEl.nodeType != 3)
 	{
 		// what what
-		console.log("oldEL is not an textnode")
+		// console.log("oldEL is not an textnode")
 	}
 	
-	console.log("newEl; ");
-	console.log(newEl);
+	// console.log("newEl; ");
+	// console.log(newEl);
 	
 	var selectEl = null;
 	if(tookparent)
 	{
-		console.log("tookparent");
+		// console.log("tookparent");
 		// node deleted, take the new one
 		if(!newEl.childNodes[index] && newEl.childNodes[index-1])
 		{
@@ -234,11 +234,11 @@ function markup(e)
 		}
 		else if(newEl.childNodes[index])
 		{	
-			console.log("child found: "+index);
+			// console.log("child found: "+index);
 			selectEl = firstTextNodeForElement(newEl.childNodes[index]);
 		}
 		else {
-			console.log("child not found!");
+			// console.log("child not found!");
 			selectEl = firstTextNodeForElement(newEl);
 		}
 	} 
@@ -246,15 +246,15 @@ function markup(e)
 		selectEl = firstTextNodeForElement(newEl);
 	}
 	
-	console.log("SelectEL; ");
-	console.log(selectEl);
+	// console.log("SelectEL; ");
+	// console.log(selectEl);
 	
 	// text added by parser?
 	if(oldEl.data && selectEl.data && oldEl.data.length < selectEl.data.length)
 	{
-		console.log("OldEl: " + oldEl.data + " is smaller than selectEl: " + selectEl.data);
+		// console.log("OldEl: " + oldEl.data + " is smaller than selectEl: " + selectEl.data);
 
-		console.log("length of OldEl " + oldEl.data.length + " is smaller than selectEl" + selectEl.data.length + ", prosumably added text, changing start");
+		// console.log("length of OldEl " + oldEl.data.length + " is smaller than selectEl" + selectEl.data.length + ", prosumably added text, changing start");
 		start += selectEl.data.length - oldEl.data.length;
 	}
 
@@ -263,7 +263,7 @@ function markup(e)
 		oldEl.nodeType == 3 &&
 		start > selectEl.data.length)
 	{
-		console.log("first");
+		// console.log("first");
 		
 		var length = selectEl.data.length;
 		var diff = start - length;
@@ -300,7 +300,7 @@ function markup(e)
 			
 		}
 		// if both are textnodes
-		console.log("second");
+		// console.log("second");
 		
 		newRange.setStart(selectEl, start);
 		// childrenindex?
@@ -308,7 +308,7 @@ function markup(e)
 	else if (selectEl) 
 	{
 		// not really possible
-		console.log("third");
+		// console.log("third");
 		
 		if(selectEl == queryEl)
 		{
@@ -328,7 +328,7 @@ function markup(e)
 		return;
 	}
 
-	console.log(selectEl.length, selectEl, start);
+	// console.log(selectEl.length, selectEl, start);
 
 	newRange.collapse(true);
 	var sel = rangy.getSelection();

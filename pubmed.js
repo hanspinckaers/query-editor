@@ -1,7 +1,7 @@
 function searchPubmedAfterDelay()
 {
 	setTimeout(function() { 
-		refresh();
+		refreshPubmed();
 	} , 100);
 }
 
@@ -9,6 +9,20 @@ function refreshPubmed()
 {
 	searchPubmed($("#rawquery")[0].value) ;
 	parse_pubmed_query($("#rawquery")[0].value, document.getElementById('query'));
+}
+
+function diff_wordMode(text1, text2) {
+  var dmp = new diff_match_patch();
+  var a = dmp.diff_linesToWords_(text1, text2);
+
+  var lineText1 = a['chars1'];
+  var lineText2 = a['chars2'];
+  var lineArray = a['lineArray'];
+
+  var diffs = dmp.diff_main(lineText1, lineText2, false);
+
+  dmp.diff_charsToLines_(diffs, lineArray);
+  return diffs;
 }
 
 function searchPubmed(query)
@@ -30,16 +44,28 @@ function searchPubmed(query)
 		$("#count").text("("+count+" results)");
 
 		var dmp = new diff_match_patch();
-		var text1 = query;
-		var text2 = queryTranslation;
+		
+		// translate to lowercase for diff
+		var text1 = query.toLowerCase();
+		var text2 = queryTranslation.toLowerCase();
 		dmp.Diff_Timeout = parseFloat(2);
 		dmp.Diff_EditCost = parseFloat(4);
-		var d = dmp.diff_main(text1, text2);		
+		var d = diff_wordMode(text1, text2);		
 		dmp.diff_cleanupEfficiency(d);
 		var ds = dmp.diff_prettyHtml(d);
+		
+		// use pubmed translated query to translate to uppercase again!
+		var re = /([A-Za-z]+)/gi;
+		var match = re.exec(queryTranslation);;
+		while (match != null)
+		{
+		  var word = match[1];
+		  ds = ds.replace(new RegExp("\\b" + word + "\\b", "gi"), word);
+		  match = re.exec(queryTranslation);
+		}
+		
 		$('#queryDiff')[0].innerHTML = ds;
 		$("#pubmed").css("opacity", "1.0");
-
 	});
 }
 
