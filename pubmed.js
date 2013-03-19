@@ -35,43 +35,54 @@ function searchPubmed(query)
 	
 	$("#pubmed").css("opacity", "0.5");
 	$("#pubmedlink").attr("href", "http://www.ncbi.nlm.nih.gov/pubmed/?term="+query);
+	var pubmedurl = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=" + encodeURIComponent(query);
+		
+	var request = $.ajax({
+	  url: pubmedurl,
+	  type: "GET",
+	  cache: false,
+	  dataType: "text"
+	});
 	
-	$.get("http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi", { db: "pubmed", term: query } ).done(function(data)
-	{
-		var json = $.xml2json(data);
-		var queryTranslation = json["QueryTranslation"];
-		var count = json["Count"];
-
-		$("#queryTranslation").text(queryTranslation);
-		$("#queryTranslation").css("color", "#1a6f10");
-		$("#pubmed").css("display", "block");
-		$("#count").text("("+count+" results)");
-
-		var dmp = new diff_match_patch();
-		
-		// translate to lowercase for diff
-		var text1 = query.toLowerCase();
-		var text2 = queryTranslation.toLowerCase();
-		dmp.Diff_Timeout = parseFloat(2);
-		dmp.Diff_EditCost = parseFloat(4);
-		var d = diff_wordMode(text1, text2);		
-		dmp.diff_cleanupEfficiency(d);
-		var ds = dmp.diff_prettyHtml(d);
-		
-		// use pubmed translated query to translate to uppercase again!
-		var re = /([A-Za-z]+)/gi;
-		var match = re.exec(queryTranslation);
-		var cleanDS = ds + "";
-		while (match != null)
-		{
-		  var word = match[1];		  
-		  cleanDS = cleanDS.replace(new RegExp("\\b" + word + "\\b", "gi"), word);
-		  // console.log(ds.search(new RegExp("\\b" + word + "\\b", "gi")));
-		  match = re.exec(queryTranslation);
-		}
-		
-		$('#queryDiff')[0].innerHTML = cleanDS;
-		$("#pubmed").css("opacity", "1.0");
+	request.done(function(data) {
+	  var json = $.xml2json(data);
+	  var queryTranslation = json["QueryTranslation"];
+	  var count = json["Count"];
+	  
+	  $("#queryTranslation").text(queryTranslation);
+	  $("#queryTranslation").css("color", "#1a6f10");
+	  $("#pubmed").css("display", "block");
+	  $("#count").text("("+count+" results)");
+	  
+	  var dmp = new diff_match_patch();
+	  
+	  // translate to lowercase for diff
+	  var text1 = query.toLowerCase();
+	  var text2 = queryTranslation.toLowerCase();
+	  dmp.Diff_Timeout = parseFloat(2);
+	  dmp.Diff_EditCost = parseFloat(4);
+	  var d = diff_wordMode(text1, text2);		
+	  dmp.diff_cleanupEfficiency(d);
+	  var ds = dmp.diff_prettyHtml(d);
+	  
+	  // use pubmed translated query to translate to uppercase again!
+	  var re = /([A-Za-z]+)/gi;
+	  var match = re.exec(queryTranslation);
+	  var cleanDS = ds + "";
+	  while (match != null)
+	  {
+	    var word = match[1];		  
+	    cleanDS = cleanDS.replace(new RegExp("\\b" + word + "\\b", "gi"), word);
+	    // console.log(ds.search(new RegExp("\\b" + word + "\\b", "gi")));
+	    match = re.exec(queryTranslation);
+	  }
+	  
+	  $('#queryDiff')[0].innerHTML = cleanDS;
+	  $("#pubmed").css("opacity", "1.0");
+	});
+	
+	request.fail(function(jqXHR, textStatus, errorThrown) {
+	  console.log( "Request failed: " + textStatus + " " + errorThrown);
 	});
 }
 

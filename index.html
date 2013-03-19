@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 
 	<head>
@@ -8,6 +9,7 @@
 		<script src="pubmed.js"></script>
 		<script type="text/javascript" charset="utf-8" src="rangy-core.js"></script>
 		<script type="text/javascript" charset="utf-8" src="editor.js"></script>
+		<script type="text/javascript" charset="utf-8" src="jquery.xdomainrequest.js"></script>
 		<script type="text/javascript" language="javaScript" src="diff_match_patch_uncompressed.js"></script>
 		<link rel="stylesheet" type="text/css" href="style.css">
 		
@@ -21,6 +23,7 @@
 		</div>
 		<div id="testquery" style="display:none"></div>
 		<p><em>Press “return” to update pubmed results or click <a href="#!" onclick="refreshPubmed()">here to update.</a></em></p>
+		Type in the gray textfield to interactively edit and make your search query!<br/><br/>
 		<div id="pubmed">
 			<p>Interpreted query <a href="#" target="_blank" id="pubmedlink"><span id="count"></span></a>: </p>
 			<p><span id="queryTranslation"></span></p>
@@ -28,6 +31,8 @@
 			<p><div id="queryDiff"><p>Difference between your query and pubmed's translated query will be shown here.</p></div></p>
 		</div>
 		<div id="search_results"></div>
+		<br/>
+		<hr/>
 		<br/>
 		<em>Legend:</em>
 		<ul>
@@ -38,12 +43,10 @@
 			<li><ins style='background:#e6ffe6;'>Inserted by PubMed</ins>
 			<li><del style='background:#ffe6e6;'>Deleted by PubMed</del>
 		</ul>
+		<hr/>
 		<p><a href="#!" onclick='loadExample()'>Load example query</a></p>
-		
-			<em>Todo:</em> 
-			<ul>
-				<li>Browser-related problems: not tested in IE.</li>
-			</ul>
+		<hr/>
+			Works/tested on Chrome, Safari, IE9, Firefox and Opera.
 		
 		<p>
 			Built by <a href="http://buildsucceeded.nl/">Hans Pinckaers</a> – 2013<br/>
@@ -55,11 +58,11 @@
 		window.onload = function(){ 	
 			var ua = navigator.userAgent, res;
 			res = (ua.indexOf(' AppleWebKit/') !== -1 || ua.indexOf('Firefox/') !== -1);
-			if(res)
-			{
+			// if(res)
+			// {
 				document.getElementById('query').contentEditable = true;
 				document.getElementById('query').innerHTML = "";
-			}
+			// }
 		};
 	</script>
 
