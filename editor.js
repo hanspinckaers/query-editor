@@ -2,7 +2,7 @@ String.prototype.trim=function(){return this.replace(/^\s+|\s+$/g, '');};
 
 function loadExample()
 {
-	var query = '"Systems Biology"[mesh] OR ("Computer Simulation" [majr] AND "Models, Biological"[majr])) AND ("whole-cell" OR "cell simulation") AND (bacteria OR virus)';
+	var query = '"Systems Biology"[mesh] OR ("Computer Simulation"[majr] AND "Models, Biological"[majr]) AND ("whole-cell" OR "cell simulation") AND (bacteria OR virus)';
 	var el = document.getElementById("rawquery");
 	document.getElementById("rawquery").value = query;
 	parse_pubmed_query(query, el);
