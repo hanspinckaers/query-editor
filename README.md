@@ -9,7 +9,7 @@ Demo
 
 Screenshot
 ----
-![editor in use](http://f.cl.ly/items/3Z2X042w2M07333X1u3v/editor.png)
+![editor in use](http://f.cl.ly/items/0b1L2Y2j0K2C1w0c3A2M/Screen%20Shot%202013-03-19%20at%2017.56.16.png)
 
 This project uses several js libs:
 ----
