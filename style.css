@@ -6,7 +6,7 @@ body {
 	margin: 0 auto;
 	font-family:"Helvetica Neue", Arial, Helvetica, sans-serif;
 	font-size: 11px;
-	line-height: 1.2em;
+	line-height: 1.3em;
 	padding: 1em;
 	text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
 }
@@ -33,12 +33,14 @@ div.levelup {
 div.operator {
 	display: block;
 }
+span {
+	height: 13px;
+}
 span.tag {
 	color: #1a6f10;
 	display: inline-block;
 	padding-right: 3px;
 	padding-left: 3px;
-
 }
 span.word {
 	color: black;
@@ -46,9 +48,12 @@ span.word {
 }
 span.word:empty
 {
+	margin-bottom: -3px;
+	margin-left: -1px;
 	width: 1px;
 	min-height: 13px;
 	min-width: 1px;
+	overflow: hidden;
 	display: inline-block;
 }
 span.parenthesis {
