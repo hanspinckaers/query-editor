@@ -73,10 +73,12 @@ function parse_pubmed_query(query, element)
 
 function searchForWordsWithoutQoutes()
 {
-	var words = document.getElementsByClassName('word');  
-	for(var i=0; i<words.length; i++)
+	var nl = document.getElementById("query").getElementsByClassName('word');  
+	var words = [];
+	for(var i = nl.length; i--; words.unshift(nl[i])); // convert to array
+	var word = words.pop()
+	while(word)
 	{
-		var word = words[i];     
 		var text = word.textContent.trim();
 		
 		var firstChar = text.charAt(0);
@@ -86,12 +88,14 @@ function searchForWordsWithoutQoutes()
 		if(firstChar == "|") firstChar = text.charAt(1);
 				
 		if(text.indexOf(' ') != -1 && 
-		  ((firstChar != '"' || lastChar != '"') && 
-		  (firstChar != '\'' || lastChar != '\'')))
+		  !((firstChar == '"' && lastChar == '"') || 
+		  (firstChar == '\'' && lastChar == '\'')))
 		{
 			word.className = 'noqoutes';
 		}
+		word = words.pop();
 	}
+	
 }
 
 function searchElForString(el, needle)
