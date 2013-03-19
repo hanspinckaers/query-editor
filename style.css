@@ -44,8 +44,16 @@ span.word {
 	color: black;
 	display: inline-block;
 }
+span.word:empty
+{
+	width: 1px;
+	min-height: 13px;
+	min-width: 1px;
+	display: inline-block;
+}
 span.parenthesis {
 	color: #ccc;
+	display: block;
 }
 div.levelup
 {

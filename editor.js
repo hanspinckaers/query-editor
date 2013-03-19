@@ -45,8 +45,9 @@ function removeUneededSpaces(query)
 
 function parse_pubmed_query(query, element) 
 {	
-	var html = '<span class="word">' + query;
-
+	query = query.trim();
+	var html = "<span class='word'>" + query;
+	
 	html = html.replace(/\s+\bOR\b\s+/gi, "</span><div class='operator'>OR</div><span class='word'>");
 	html = html.replace(/\s+\bAND\b\s+/gi, "</span><div class='operator'>AND</div><span class='word'>");
 	html = html.replace(/\s+\bNOT\b\s+/gi, "</span><div class='operator'>NOT</div><span class='word'>");
@@ -56,14 +57,17 @@ function parse_pubmed_query(query, element)
 	
 	html = html.replace(/\s*\(/gi, "</span><div class='levelup'>(<div class='secondlevel'><span class='word'>");
 	html = html.replace(/\)\s*/gi, "</span><br/></div>)</div><span class='word'>");
-
-	element.innerHTML = html + "<br/></span>";
-	console.log(query.length);
-	if(query.length == 1)
-	{
-		console.log("asdf");
-		element.innerHTML = "<br/>";
-	}
+	
+	html = html + "</span>";
+	html = html.replace(/<span class='word'><\/span>/g, "");
+	html = html.replace(/<br\/>/g, "");
+	html += "<br/>";
+	
+	//for firefox 
+	var firefox = (navigator.userAgent.indexOf('Firefox/') !== -1);
+	if(firefox) html = html.replace("<span class='word'>|</span>", "<span class='word'>|<br/></span>");
+	
+	element.innerHTML = html;
 	searchForWordsWithoutQoutes();
 }
 
@@ -125,7 +129,7 @@ function markup(e)
 		rawQueryEl.value = text;
 		searchPubmed(text);
 	} 
-	if(text == prevQuery && letter != 13) return;	
+	if(text == prevQuery && letter != 13 && letter != 8) return;	
 	prevQuery = text;
 
 	// add | token
