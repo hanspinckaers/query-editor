@@ -12,9 +12,9 @@ function loadExample()
 function queryFromHTML(html)
 {
 	html = html.replace(/<(?:.|\n)*?>/gm,' ')
-		.replace("\n"," ")
-		.replace("\r"," ")
-		.replace("&nbsp;"," ")
+		.replace(/\\n/," ")
+		.replace(/\\r/," ")
+		.replace(/&nbsp;/g," ")
 		.replace(/\s{2,}/g, ' ')
 		.replace(/^\s+/,'')
 		.replace(/\s+$/,'');
@@ -161,7 +161,11 @@ function markup(e)
 	var sel = rangy.getSelection();
 	sel.setSingleRange(newRange);
 	
-	if(queryEl.textContent.length == 0) queryEl.focus();
+	if(queryEl.textContent.length < 2)
+	{
+		searchPubmed("");
+		queryEl.focus();
+	}
 }
 
 // use br instead of div div
