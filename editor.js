@@ -58,6 +58,12 @@ function parse_pubmed_query(query, element)
 	html = html.replace(/\)\s*/gi, "</span><br/></div>)</div><span class='word'>");
 
 	element.innerHTML = html + "<br/></span>";
+	console.log(query.length);
+	if(query.length == 1)
+	{
+		console.log("asdf");
+		element.innerHTML = "<br/>";
+	}
 	searchForWordsWithoutQoutes();
 }
 
@@ -105,8 +111,10 @@ function markup(e)
 {
 	var letter = e.which;
 	
+	if(letter == 37 || letter == 38 || letter == 39 || letter == 40) return;
+
 	var selection = rangy.getSelection();
-	if (selection.rangeCount == 0 || !rangy.getSelection().isCollapsed) return;
+	if ((selection.rangeCount == 0 || !rangy.getSelection().isCollapsed) && letter != 8) return;
 	var range = selection.getRangeAt(0);
 
 	var rawQueryEl = document.getElementById("rawquery");
@@ -117,7 +125,7 @@ function markup(e)
 		rawQueryEl.value = text;
 		searchPubmed(text);
 	} 
-	if(text == prevQuery) return;	
+	if(text == prevQuery && letter != 13) return;	
 	prevQuery = text;
 
 	// add | token
@@ -136,6 +144,7 @@ function markup(e)
 	rawQueryEl.value = text.replace("|","");
 	
 	var arr = searchElForString(queryEl, "|");	
+	if(!arr[0]) return;
 	arr[0].data = arr[0].data.replace("|", "");
 
 	var newRange = rangy.createRange();
@@ -143,6 +152,8 @@ function markup(e)
 	newRange.collapse(true);
 	var sel = rangy.getSelection();
 	sel.setSingleRange(newRange);
+	
+	if(queryEl.textContent.length == 0) queryEl.focus();
 }
 
 // use br instead of div div
