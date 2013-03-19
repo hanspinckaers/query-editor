@@ -33,9 +33,7 @@
 		<p>
 			Todo: 
 			<ul>
-				<li>Reliability</li>
-				<li>Browser-related problems: <strike> Strange cursor handling in Firefox,</strike> not tested in IE.</li>
-				<li>Keep in mind that the editor is not finished. <strong>If you want to be save, type in the upper textfield!</strong></li>
+				<li>Browser-related problems: not tested in IE.</li>
 			</ul>
 		</p>
 		<p>
@@ -46,10 +44,8 @@
 
 	<script>
 		window.onload = function(){ 	
-			var ua = navigator.userAgent,
-			res;
-			res = ua.indexOf(' AppleWebKit/') !== -1;
-			if(!res) res = ua.indexOf('Firefox/') !== -1;
+			var ua = navigator.userAgent, res;
+			res = (ua.indexOf(' AppleWebKit/') !== -1 || ua.indexOf('Firefox/') !== -1);
 			if(res)
 			{
 				document.getElementById('query').contentEditable = true;
