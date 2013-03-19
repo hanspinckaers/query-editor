@@ -13,7 +13,7 @@
 		<link rel="stylesheet" type="text/css" href="style.css">
 		
 	</head>
-	<body>
+	<body spellcheck="false" >
 		<a href="https://github.com/HansPinckaers/query-editor"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
 		
 		<textarea id="rawquery" type="text" onpaste="searchPubmedAfterDelay()" onkeyup="return parse_pubmed_query(this.value, document.getElementById('query'), event)" onkeypress="return cancelReturn(event)" placeholder="Paste existing pubmed-query here. Or start a new one below!"></textarea>

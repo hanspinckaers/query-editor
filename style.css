@@ -35,21 +35,35 @@ div.leveldown {
 div.operator {
 	display: block;
 }
-div.tag {
+span.tag {
 	color: #1a6f10;
 	display: inline;
-	padding-left: 3px;
+}
+span.word {
+	color: black;
+}
+span.parenthesis {
+	color: #ccc;
+}
+div.levelup
+{
+	color:#ccc
+}
+div.secondlevel
+{
+	padding-left: 10px;
+}
+span.noqoutes
+{
+	color:red;
 }
 div.operator {
 	color: #ad272e;
 	text-align: left;
 }
-#query span {
-	color:#e98750;
-}
 textarea {
 	width: 100%;
-	height: 20em;
+	height: 15em;
 	margin-bottom: 2em;
 }
 #pubmed

@@ -1,3 +1,5 @@
+String.prototype.trim=function(){return this.replace(/^\s+|\s+$/g, '');};
+
 function loadExample()
 {
 	var query = '"Systems Biology"[mesh] OR ("Computer Simulation" [majr] AND "Models, Biological"[majr])) AND ("whole-cell" OR "cell simulation") AND (bacteria OR virus)';
@@ -7,37 +9,80 @@ function loadExample()
 	refreshPubmed();
 }
 
-function parse_pubmed_query(query, element) 
+function queryFromHTML(html)
 {
-	var html = '';
-	
-	// add line between two operators
-	// html = query.replace(/\s+AND\s+AND\s+/gi, " AND <br/> AND ")
-	// html = html.replace(/\s+OR\s+OR\s+/gi, " OR <br/> OR ")
-	// html = html.replace(/\s+NOT\s+NOT\s+/gi, " NOT <br/> NOT ")
-	// 
-	// html = html.replace(/\s+AND\s+NOT\s+/gi, " AND <br/> NOT ")
-	// html = html.replace(/\s+NOT\s+AND\s+/gi, " NOT <br/> AND ")
-	// html = html.replace(/\s+AND\s+OR\s+/gi, " AND <br/> OR ")
-	// html = html.replace(/\s+OR\s+AND\s+/gi, " OR <br/> AND ")
-	// html = html.replace(/\s+NOT\s+OR\s+/gi, " NOT <br/> OR ")
-	// html = html.replace(/\s+OR\s+NOT\s+/gi, " OR <br/> NOT ")
-	
-	// html = html.replace(/\s?\bOR\b\s?/gi, "<div class='operator'> OR </div>");
-	// html = html.replace(/\s?\bAND\b\s?/gi, "<div class='operator'> AND </div>");
-	// html = html.replace(/\s?\bNOT\b\s?/gi, "<div class='operator'> NOT </div>");
-	
-	html = query.replace(/\s?\bOR\b\s?/gi, "<div class='operator'>OR</div>");
-	html = html.replace(/\s?\bAND\b\s?/gi, "<div class='operator'>AND</div>");
-	html = html.replace(/\s?\bNOT\b\s?/gi, "<div class='operator'>NOT</div>");
-	
-	html = html.replace(/\[/gi, "<span class='tag'>[");
-	html = html.replace(/\]/gi, "]</span>");
-	
-	html = html.replace(/\s*\(/gi, "<div class='levelup focus_1'>(");
-	html = html.replace(/\)\s*/gi, ")</div>");
+	html = html.replace(/<(?:.|\n)*?>/gm,' ')
+		.replace("\n"," ")
+		.replace("\r"," ")
+		.replace("&nbsp;"," ")
+		.replace(/\s{2,}/g, ' ')
+		.replace(/^\s+/,'')
+		.replace(/\s+$/,'');
+	// return html;
+	return removeUneededSpaces(html);
+}
 
-	element.innerHTML = html + "<br/>";
+function removeUneededSpaces(query)
+{
+	var re = /["|\[|\]|\(|\)]\s+["|\[|\]|\(|\)]/gi;
+	var match = re.exec(query);
+	while (match != null)
+	{
+	  var before_length = match.index;
+	  var before = query.substring(0, before_length);
+	  var after_index = match.index + match[0].length;
+	  var after = query.substring(after_index);
+	  var substr = query.substr(match.index, match[0].length);
+	  substr = substr.replace(" ", "•");
+	  query = before+substr+after;
+	  match = re.exec(query);
+	}
+	return query.replace(/•/g, "").replace(/\(\s+/g, "(")
+		.replace(/\s+\)/g, ")")
+		.replace(/\s+\[/g, "[");
+}
+
+function parse_pubmed_query(query, element) 
+{	
+	var html = '<span class="word">' + query;
+
+	html = html.replace(/\s?\bOR\b\s?/gi, "</span><div class='operator'>OR</div><span class='word'>");
+	html = html.replace(/\s?\bAND\b\s?/gi, "</span><div class='operator'>AND</div><span class='word'>");
+	html = html.replace(/\s?\bNOT\b\s?/gi, "</span><div class='operator'>NOT</div><span class='word'>");
+
+	html = html.replace(/\[/gi, "</span><span class='tag'>[");
+	html = html.replace(/\]/gi, "]</span><span class='word'>");
+	
+	html = html.replace(/\s*\(/gi, "</span><div class='levelup'>(<div class='secondlevel'><span class='word'>");
+	html = html.replace(/\)\s*/gi, "</span><br/></div>)</div><span class='word'>");
+
+
+
+	element.innerHTML = html + "<br/></span>";
+	searchForWordsWithoutQoutes();
+}
+
+function searchForWordsWithoutQoutes()
+{
+	var words = document.getElementsByClassName('word');  
+	for(var i=0; i<words.length; i++)
+	{
+		var word = words[i];     
+		var text = word.textContent.trim();
+		
+		var firstChar = text.charAt(0);
+		var lastChar = text.charAt(text.length-1);
+		
+		if(lastChar == "|") lastChar = text.charAt(text.length-2);
+		if(firstChar == "|") lastChar = text.charAt(1);
+
+		if(text.indexOf(' ') != -1 && 
+		  (firstChar != '"' || lastChar != '"'))
+		{
+			word.className = 'noqoutes';
+		}
+	}
+
 }
 
 function searchElForString(el, needle)
@@ -68,8 +113,12 @@ function markup(e)
 
 	var rawQueryEl = document.getElementById("rawquery");
 	var queryEl = document.getElementById("query");
-	var text = queryEl.innerHTML.replace(/<(?:.|\n)*?>/gm,' ').replace("\n"," ").replace("\r"," ").replace("&nbsp;"," ").replace(/\s{2,}/g, ' ').replace(/^\s+/,'').replace(/\s+$/,'');
-	if(letter == 13) searchPubmed(text);
+	var text = queryFromHTML(queryEl.innerHTML);
+	if(letter == 13)
+	{
+		rawQueryEl.value = text;
+		searchPubmed(text);
+	} 
 	if(text == prevQuery) return;	
 	prevQuery = text;
 
@@ -82,9 +131,10 @@ function markup(e)
 	selection.removeAllRanges();
 	selection.addRange(range);
 	
-	text = queryEl.innerHTML.replace(/<(?:.|\n)*?>/gm,' ').replace("\n"," ").replace("\r"," ").replace("&nbsp;"," ").replace(/\s{2,}/g, ' ').replace(/^\s+/,'').replace(/\s+$/,'');
+	text = queryFromHTML(queryEl.innerHTML);
 	// parse
 	parse_pubmed_query(text, queryEl); 
+	
 	rawQueryEl.value = text.replace("|","");
 	
 	var arr = searchElForString(queryEl, "|");	
