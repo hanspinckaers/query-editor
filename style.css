@@ -30,14 +30,15 @@ div.levelup {
 /*	border-radius: 5px;*/
 	border-left: 1px dashed rgba(0, 0, 0, 0.3);
 }
-div.leveldown {
-}
 div.operator {
 	display: block;
 }
 span.tag {
 	color: #1a6f10;
 	display: inline-block;
+	padding-right: 3px;
+	padding-left: 3px;
+
 }
 span.word {
 	color: black;

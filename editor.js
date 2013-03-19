@@ -76,7 +76,8 @@ function searchForWordsWithoutQoutes()
 		if(firstChar == "|") firstChar = text.charAt(1);
 				
 		if(text.indexOf(' ') != -1 && 
-		  (firstChar != '"' || lastChar != '"'))
+		  ((firstChar != '"' || lastChar != '"') && 
+		  (firstChar != '\'' || lastChar != '\'')))
 		{
 			word.className = 'noqoutes';
 		}
