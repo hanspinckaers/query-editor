@@ -37,7 +37,8 @@ function removeUneededSpaces(query)
 	  query = before+substr+after;
 	  match = re.exec(query);
 	}
-	return query.replace(/•/g, "").replace(/\(\s+/g, "(")
+	return query.replace(/•/g, "")
+		.replace(/\(\s+/g, "(")
 		.replace(/\s+\)/g, ")")
 		.replace(/\s+\[/g, "[");
 }
@@ -46,17 +47,15 @@ function parse_pubmed_query(query, element)
 {	
 	var html = '<span class="word">' + query;
 
-	html = html.replace(/\s?\bOR\b\s?/gi, "</span><div class='operator'>OR</div><span class='word'>");
-	html = html.replace(/\s?\bAND\b\s?/gi, "</span><div class='operator'>AND</div><span class='word'>");
-	html = html.replace(/\s?\bNOT\b\s?/gi, "</span><div class='operator'>NOT</div><span class='word'>");
+	html = html.replace(/\s+\bOR\b\s+/gi, "</span><div class='operator'>OR</div><span class='word'>");
+	html = html.replace(/\s+\bAND\b\s+/gi, "</span><div class='operator'>AND</div><span class='word'>");
+	html = html.replace(/\s+\bNOT\b\s+/gi, "</span><div class='operator'>NOT</div><span class='word'>");
 
 	html = html.replace(/\[/gi, "</span><span class='tag'>[");
 	html = html.replace(/\]/gi, "]</span><span class='word'>");
 	
 	html = html.replace(/\s*\(/gi, "</span><div class='levelup'>(<div class='secondlevel'><span class='word'>");
 	html = html.replace(/\)\s*/gi, "</span><br/></div>)</div><span class='word'>");
-
-
 
 	element.innerHTML = html + "<br/></span>";
 	searchForWordsWithoutQoutes();
@@ -82,7 +81,6 @@ function searchForWordsWithoutQoutes()
 			word.className = 'noqoutes';
 		}
 	}
-
 }
 
 function searchElForString(el, needle)
@@ -105,7 +103,6 @@ var prevQuery = "";
 function markup(e) 
 {
 	var letter = e.which;
-	if(letter == 32 || letter == 37 || letter == 38 || letter == 39 || letter == 40) return;
 	
 	var selection = rangy.getSelection();
 	if (selection.rangeCount == 0 || !rangy.getSelection().isCollapsed) return;

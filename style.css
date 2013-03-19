@@ -37,17 +37,18 @@ div.operator {
 }
 span.tag {
 	color: #1a6f10;
-	display: inline;
+	display: inline-block;
 }
 span.word {
 	color: black;
+	display: inline-block;
 }
 span.parenthesis {
 	color: #ccc;
 }
 div.levelup
 {
-	color:#ccc
+	color:#ccc;
 }
 div.secondlevel
 {
@@ -55,7 +56,7 @@ div.secondlevel
 }
 span.noqoutes
 {
-	color:red;
+	color:red !important;
 }
 div.operator {
 	color: #ad272e;
