@@ -20,7 +20,7 @@
 			Sorry, using the styled editor is not possible yet in your browser. <strong>Use Chrome, Safari or Firefox.</strong> <br/>You can always type in the upper textfield and see your styled query here.
 		</div>
 		<div id="testquery" style="display:none"></div>
-		<p><em>press “return” to update pubmed results or click <a href="#!" onclick="refreshPubmed()">here to update.</a></em></p>
+		<p><em>Press “return” to update pubmed results or click <a href="#!" onclick="refreshPubmed()">here to update.</a></em></p>
 		<div id="pubmed">
 			<p>Interpreted query <a href="#" target="_blank" id="pubmedlink"><span id="count"></span></a>: </p>
 			<p><span id="queryTranslation"></span></p>
@@ -29,13 +29,22 @@
 		</div>
 		<div id="search_results"></div>
 		<br/>
+		<em>Legend:</em>
+		<ul>
+			<li><span class='tag legend'>Special tag</span></li>
+			<li><span class='noqoutes'>Broken words without spaces</span></li>
+			<li><div class='operator'>Operators: AND | OR  | NOT</span>
+			<li><span class='parenthesis'>Parenthesis ( )</span>
+			<li><ins style='background:#e6ffe6;'>Inserted by PubMed</ins>
+			<li><del style='background:#ffe6e6;'>Deleted by PubMed</del>
+		</ul>
 		<p><a href="#!" onclick='loadExample()'>Load example query</a></p>
-		<p>
-			Todo: 
+		
+			<em>Todo:</em> 
 			<ul>
 				<li>Browser-related problems: not tested in IE.</li>
 			</ul>
-		</p>
+		
 		<p>
 			Built by <a href="http://buildsucceeded.nl/">Hans Pinckaers</a> – 2013<br/>
 			This project is <a href="https://github.com/HansPinckaers/query-editor">open-source</a>.

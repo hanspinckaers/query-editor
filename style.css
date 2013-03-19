@@ -42,9 +42,19 @@ span.tag {
 	padding-right: 3px;
 	padding-left: 3px;
 }
+span.legend {padding:0px}
 span.word {
 	color: black;
 	display: inline-block;
+}
+ul
+{
+	padding: 0px;
+	margin-top: 0px;
+}
+ul li
+{
+	padding: 3px 0px;
 }
 span.word:empty
 {
@@ -106,13 +116,13 @@ textarea {
 {
 	color: inherit !important;
 }
-#queryDiff ins, #queryDiff del
+ins, del
 {
 	font-weight: bold;
 	padding: 3px;
 	color: #000000;
 }
-#queryDiff ins
+ins
 {
 	text-decoration: none;
 	border-bottom: 1px solid rgba(0, 0, 0, 0.17);
@@ -120,7 +130,7 @@ textarea {
 	font-style: normal;
 }
 
-#queryDiff del
+del
 {
 	font-weight: normal;
 	font-style: normal;
