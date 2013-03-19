@@ -74,8 +74,8 @@ function searchForWordsWithoutQoutes()
 		var lastChar = text.charAt(text.length-1);
 		
 		if(lastChar == "|") lastChar = text.charAt(text.length-2);
-		if(firstChar == "|") lastChar = text.charAt(1);
-
+		if(firstChar == "|") firstChar = text.charAt(1);
+				
 		if(text.indexOf(' ') != -1 && 
 		  (firstChar != '"' || lastChar != '"'))
 		{
