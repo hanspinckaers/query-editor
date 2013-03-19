@@ -60,11 +60,8 @@ function searchPubmed(query)
 		var cleanDS = ds + "";
 		while (match != null)
 		{
-			console.log(word);
-		  var word = match[1];
-		  
+		  var word = match[1];		  
 		  cleanDS = cleanDS.replace(new RegExp("\\b" + word + "\\b", "gi"), word);
-		  console.log(cleanDS);
 		  // console.log(ds.search(new RegExp("\\b" + word + "\\b", "gi")));
 		  match = re.exec(queryTranslation);
 		}
