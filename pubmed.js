@@ -27,7 +27,11 @@ function diff_wordMode(text1, text2) {
 
 function searchPubmed(query)
 {
-	if(query.length == 0) return;
+	if(query.length == 0) 
+	{
+		$("#pubmed").css("display", "none");
+		return;
+	};
 	
 	$("#pubmed").css("opacity", "0.5");
 	$("#pubmedlink").attr("href", "http://www.ncbi.nlm.nih.gov/pubmed/?term="+query);
