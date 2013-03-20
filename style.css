@@ -49,8 +49,6 @@ span {
 }
 span.tag {
 	color: #1a6f10;
-	padding-right: 3px;
-	padding-left: 3px;
 }
 span.legend {padding:0px}
 span.word {
