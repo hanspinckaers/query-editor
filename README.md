@@ -16,8 +16,9 @@ This project uses several js libs:
 
 - [jQuery](http://jquery.com/)
 - [Rangy](https://code.google.com/p/rangy/)
-- [Wicked Good XPath](https://code.google.com/p/wicked-good-xpath/)
 - [Diff Match Patch](https://code.google.com/p/google-diff-match-patch/)
+- [jQuery XML to JSON Plugin](http://www.fyneworks.com/jquery/xml-to-json/)
+- [jQuery XDomainRequest extension](https://github.com/MoonScript/jQuery-ajaxTransport-XDomainRequest)
 
 License
 -------
