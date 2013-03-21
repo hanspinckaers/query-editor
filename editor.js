@@ -24,34 +24,37 @@ function queryFromHTML(html)
 
 function removeUneededSpaces(query)
 {
-	var re = /["|\[|\]|\(|\)]\s+["|\[|\]|\(|\)]/gi;
-	var match = re.exec(query);
-	while (match != null)
-	{
-	  var before_length = match.index;
-	  var before = query.substring(0, before_length);
-	  var after_index = match.index + match[0].length;
-	  var after = query.substring(after_index);
-	  var substr = query.substr(match.index, match[0].length);
-	  substr = substr.replace(" ", "•");
-	  query = before+substr+after;
-	  match = re.exec(query);
-	}
-	return query.replace(/•/g, "")
-		.replace(/\(\s+/g, "(")
-		.replace(/\s+\)/g, ")")
-		.replace(/\s+\[/g, "[")
-		.replace(/\s?\*\s?/g, "* ");
+	query = query.replace(/(["|\[|\]|\(|\)])(\s?)(["|\[|\]|\(|\)])/gi, "$1$3");
+	// 
+	// var re = /["|\[|\]|\(|\)]\s+["|\[|\]|\(|\)]/gi;
+	// var match = re.exec(query);
+	// while (match != null)
+	// {
+	//   var before_length = match.index;
+	//   var before = query.substring(0, before_length);
+	//   var after_index = match.index + match[0].length;
+	//   var after = query.substring(after_index);
+	//   var substr = query.substr(match.index, match[0].length);
+	//   substr = substr.replace(" ", "•");
+	//   query = before+substr+after;
+	//   match = re.exec(query);
+	// }
+	// return query.replace(/•/g, "")
+	return	query.replace(/\(\s+/g, "(")
+				.replace(/\s+\)/g, ")")
+				.replace(/\s+\[/g, "[")
+				.replace(/\s?\*\s?/g, "* ");
 }
 
 function parse_pubmed_query(query, element) 
 {	
 	query = query.trim();
+	console.log(query);
 	var html = "<span class='word'>" + query;
 	// | = cursor!
-	html = html.replace(/([^\s\|]\s+)(\|?\b)(O\|?R)(\b\|?)(\s+[^\s\|])/gi, "$1</span><div class='operator'>$2$3$4</div><span class='word'>$5"); // OR
-	html = html.replace(/([^\s\|]\s+)(\|?\b)(A\|?N\|?D)(\b\|?)(\s+[^\s\|])/gi, "$1</span><div class='operator'>$2$3$4</div><span class='word'>$5"); // AND
-	html = html.replace(/([^\s\|]\s+)(\|?\b)(N\|?O\|?T)(\b\|?)(\s+[^\s\|])/gi, "$1</span><div class='operator'>$2$3$4</div><span class='word'>$5"); // NOT
+	html = html.replace(/([^\s\|]\s+|\|\s?)(\|?\b)(O\|?R)(\b\|?)(\s+[^\s\|]|\s?\|)/gi, "$1</span><div class='operator'>$2$3$4</div><span class='word'>$5"); // OR
+	html = html.replace(/([^\s\|]\s+|\|\s?)(\|?\b)(A\|?N\|?D)(\b\|?)(\s+[^\s\|]|\s?\|)/gi, "$1</span><div class='operator'>$2$3$4</div><span class='word'>$5"); // AND
+	html = html.replace(/([^\s\|]\s+|\|\s?)(\|?\b)(N\|?O\|?T)(\b\|?)(\s+[^\s\|]|\s?\|)/gi, "$1</span><div class='operator'>$2$3$4</div><span class='word'>$5"); // NOT
 
 	html = html.replace(/\[/gi, "</span><span class='tag'>[");
 	html = html.replace(/\]/gi, "]</span><span class='word'>");
@@ -103,9 +106,9 @@ function searchForWordsWithoutQoutes()
 function rawQueryFromText(query)
 {
 	return query.replace("|","")
-				.replace(/(\S\s+)(\b)(OR)(\b)(\s+\S)/gi, "$1$2OR$4$5") // OR
-				.replace(/(\S\s+)(\b)(AND)(\b)(\s+\S)/gi, "$1$2AND$4$5") // AND
-				.replace(/(\S\s+)(\b)(NOT)(\b)(\s+\S)/gi, "$1$2NOT$4$5"); // NOT
+				.replace(/([^\s\|]\s+|\|\s?)(\|?\b)(OR)(\b\|?)(\s+[^\s\|]|\s?\|)/gi, "$1$2OR$4$5") // OR
+				.replace(/([^\s\|]\s+|\|\s?)(\|?\b)(AND)(\b\|?)(\s+[^\s\|]|\s?\|)/gi, "$1$2AND$4$5") // AND
+				.replace(/([^\s\|]\s+|\|\s?)(\|?\b)(NOT)(\b\|?)(\s+[^\s\|]|\s?\|)/gi, "$1$2NOT$4$5"); // NOT
 }
 
 function searchElForString(el, needle)
