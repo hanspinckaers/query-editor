@@ -49,9 +49,9 @@ function parse_pubmed_query(query, element)
 	query = query.trim();
 	var html = "<span class='word'>" + query;
 	// | = cursor!
-	html = html.replace(/(\S\s+)(\|?\b)(O\|?R)(\b\|?)(\s+\S)/gi, "$1</span><div class='operator'>$2$3$4</div><span class='word'>$5"); // OR
-	html = html.replace(/(\S\s+)(\|?\b)(A\|?N\|?D)(\b\|?)(\s+\S)/gi, "$1</span><div class='operator'>$2$3$4</div><span class='word'>$5"); // AND
-	html = html.replace(/(\S\s+)(\|?\b)(N\|?O\|?T)(\b\|?)(\s+\S)/gi, "$1</span><div class='operator'>$2$3$4</div><span class='word'>$5"); // NOT
+	html = html.replace(/([^\s\|]\s+)(\|?\b)(O\|?R)(\b\|?)(\s+[^\s\|])/gi, "$1</span><div class='operator'>$2$3$4</div><span class='word'>$5"); // OR
+	html = html.replace(/([^\s\|]\s+)(\|?\b)(A\|?N\|?D)(\b\|?)(\s+[^\s\|])/gi, "$1</span><div class='operator'>$2$3$4</div><span class='word'>$5"); // AND
+	html = html.replace(/([^\s\|]\s+)(\|?\b)(N\|?O\|?T)(\b\|?)(\s+[^\s\|])/gi, "$1</span><div class='operator'>$2$3$4</div><span class='word'>$5"); // NOT
 
 	html = html.replace(/\[/gi, "</span><span class='tag'>[");
 	html = html.replace(/\]/gi, "]</span><span class='word'>");
