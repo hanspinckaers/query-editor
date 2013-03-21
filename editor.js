@@ -48,9 +48,10 @@ function parse_pubmed_query(query, element)
 	query = query.trim();
 	var html = "<span class='word'>" + query;
 	
-	html = html.replace(/\s+\bOR\b\s+/gi, "</span><div class='operator'>OR</div><span class='word'>");
-	html = html.replace(/\s+\bAND\b\s+/gi, "</span><div class='operator'>AND</div><span class='word'>");
-	html = html.replace(/\s+\bNOT\b\s+/gi, "</span><div class='operator'>NOT</div><span class='word'>");
+	// | = cursor!
+	html = html.replace(/(\s+\b|\|\s+\b)(OR)(\b\s+|\|\s+)/gi, "$1</span><div class='operator'>OR</div><span class='word'>$3");
+	html = html.replace(/(\s+\b|\|\s+\b)(AND)(\b\s+|\|\s+)/gi, "$1</span><div class='operator'>AND</div><span class='word'>$3");
+	html = html.replace(/(\s+\b|\|\s+\b)(NOT)(\b\s+|\|\s+)/gi, "$1</span><div class='operator'>NOT</div><span class='word'>$3");
 
 	html = html.replace(/\[/gi, "</span><span class='tag'>[");
 	html = html.replace(/\]/gi, "]</span><span class='word'>");
@@ -61,11 +62,10 @@ function parse_pubmed_query(query, element)
 	html = html + "</span>";
 	html = html.replace(/<span class='word'><\/span>/g, "");
 	html = html.replace(/<br\/>/g, "");
-	html += "<br/>";
 	
-	//for firefox 
-	var firefox = (navigator.userAgent.indexOf('Firefox/') !== -1);
-	if(firefox) html = html.replace("<span class='word'>|</span>", "<span class='word'>|<br/></span>");
+	// make sure that there is always <br/> on the end of div.
+	if(html.indexOf("<span class='word'>|</span>") != html.length - "<span class='word'>|</span>".length) html += "<br/>";
+	html = html.replace("<span class='word'>|</span>", "<span class='word'>|<br/></span>");	
 	
 	element.innerHTML = html;
 	searchForWordsWithoutQoutes();
@@ -79,7 +79,7 @@ function searchForWordsWithoutQoutes()
 	var word = words.pop()
 	while(word)
 	{
-		var text = word.textContent.trim();
+		var text = word.textContent.replace("|","").trim();
 		
 		var firstChar = text.charAt(0);
 		var lastChar = text.charAt(text.length-1);

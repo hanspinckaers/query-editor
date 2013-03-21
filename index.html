@@ -12,14 +12,14 @@
 		<script type="text/javascript" charset="utf-8" src="jquery.xdomainrequest.js"></script>
 		<script type="text/javascript" language="javaScript" src="diff_match_patch_uncompressed.js"></script>
 		<link rel="stylesheet" type="text/css" href="style.css">
-		
+
 	</head>
 	<body spellcheck="false" >
 		<a href="https://github.com/HansPinckaers/query-editor"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
-		
+
 		<textarea id="rawquery" type="text" onpaste="searchPubmedAfterDelay()" onkeyup="return parse_pubmed_query(this.value, document.getElementById('query'), event)" onkeypress="return cancelReturn(event)" placeholder="Paste existing pubmed-query here. Or start a new one below!"></textarea>
 		<div id="query" contenteditable="false" onkeyup="markup(event)" onkeypress="return insertBR(event)">
-			Sorry, using the styled editor is not possible yet in your browser. <strong>Use Chrome, Safari or Firefox.</strong> <br/>You can always type in the upper textfield and see your styled query here.
+			Sorry, using the styled editor is not possible in your browser. <strong>Use Chrome, Safari, IE9, Firefox or Opera.</strong> <br/>You can always type in the upper textfield and see your styled query here.
 		</div>
 		<div id="testquery" style="display:none"></div>
 		<p><em>Press “return” to update pubmed results or click <a href="#!" onclick="refreshPubmed()">here to update.</a></em></p>
@@ -65,13 +65,20 @@
 	<script>
 		window.onload = function(){ 	
 			var ua = navigator.userAgent, res;
-			res = (ua.indexOf(' AppleWebKit/') !== -1 || ua.indexOf('Firefox/') !== -1);
-			// if(res)
-			// {
+			res = (ua.indexOf(' AppleWebKit/') !== -1 || ua.indexOf('Firefox/') !== -1 || ua.indexOf('Opera/') !== -1);
+			if(res)
+			{
 				document.getElementById('query').contentEditable = true;
 				document.getElementById('query').innerHTML = "";
-			// }
+			}
 		};
 	</script>
+
+	<!--[if gte IE 9]>
+		<script>
+			document.getElementById('query').contentEditable = true;
+			document.getElementById('query').innerHTML = "";
+		</script>
+	<![endif]-->
 
 </html>
