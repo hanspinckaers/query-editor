@@ -49,6 +49,7 @@ span {
 }
 span.tag {
 	color: #1a6f10;
+	padding: 0px;
 }
 span.legend {padding:0px}
 span.word {
@@ -91,6 +92,7 @@ span.noqoutes
 div.operator {
 	color: #ad272e;
 	text-align: left;
+	text-transform: uppercase;
 }
 textarea {
 	width: 100%;

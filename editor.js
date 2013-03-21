@@ -40,21 +40,23 @@ function removeUneededSpaces(query)
 	return query.replace(/•/g, "")
 		.replace(/\(\s+/g, "(")
 		.replace(/\s+\)/g, ")")
-		.replace(/\s+\[/g, "[");
+		.replace(/\s+\[/g, "[")
+		.replace(/\s?\*\s?/g, "* ");
 }
 
 function parse_pubmed_query(query, element) 
 {	
 	query = query.trim();
 	var html = "<span class='word'>" + query;
-	
 	// | = cursor!
-	html = html.replace(/(\s+\b|\|\s+\b)(OR)(\b\s+|\|\s+)/gi, "$1</span><div class='operator'>OR</div><span class='word'>$3");
-	html = html.replace(/(\s+\b|\|\s+\b)(AND)(\b\s+|\|\s+)/gi, "$1</span><div class='operator'>AND</div><span class='word'>$3");
-	html = html.replace(/(\s+\b|\|\s+\b)(NOT)(\b\s+|\|\s+)/gi, "$1</span><div class='operator'>NOT</div><span class='word'>$3");
+	html = html.replace(/(\S\s+)(\|?\b)(O\|?R)(\b\|?)(\s+\S)/gi, "$1</span><div class='operator'>$2$3$4</div><span class='word'>$5"); // OR
+	html = html.replace(/(\S\s+)(\|?\b)(A\|?N\|?D)(\b\|?)(\s+\S)/gi, "$1</span><div class='operator'>$2$3$4</div><span class='word'>$5"); // AND
+	html = html.replace(/(\S\s+)(\|?\b)(N\|?O\|?T)(\b\|?)(\s+\S)/gi, "$1</span><div class='operator'>$2$3$4</div><span class='word'>$5"); // NOT
 
 	html = html.replace(/\[/gi, "</span><span class='tag'>[");
 	html = html.replace(/\]/gi, "]</span><span class='word'>");
+	
+	html = html.replace(/\*/gi, "</span><span class='expand'>*<span class='word'>");
 	
 	html = html.replace(/\s*\(/gi, "</span><div class='levelup'>(<div class='secondlevel'><span class='word'>");
 	html = html.replace(/\)\s*/gi, "</span><br/></div>)</div><span class='word'>");
@@ -98,6 +100,14 @@ function searchForWordsWithoutQoutes()
 	
 }
 
+function rawQueryFromText(query)
+{
+	return query.replace("|","")
+				.replace(/(\S\s+)(\b)(OR)(\b)(\s+\S)/gi, "$1$2OR$4$5") // OR
+				.replace(/(\S\s+)(\b)(AND)(\b)(\s+\S)/gi, "$1$2AND$4$5") // AND
+				.replace(/(\S\s+)(\b)(NOT)(\b)(\s+\S)/gi, "$1$2NOT$4$5"); // NOT
+}
+
 function searchElForString(el, needle)
 {
 	var child = el.firstChild;
@@ -130,7 +140,7 @@ function markup(e)
 	var text = queryFromHTML(queryEl.innerHTML);
 	if(letter == 13)
 	{
-		rawQueryEl.value = text;
+		rawQueryEl.value = rawQueryFromText(text);
 		searchPubmed(text);
 	} 
 	if(text == prevQuery && letter != 13 && letter != 8) return;	
@@ -149,7 +159,7 @@ function markup(e)
 	// parse
 	parse_pubmed_query(text, queryEl); 
 	
-	rawQueryEl.value = text.replace("|","");
+	rawQueryEl.value = rawQueryFromText(text);
 	
 	var arr = searchElForString(queryEl, "|");	
 	if(!arr[0]) return;
